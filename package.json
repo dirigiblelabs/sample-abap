@@ -1,0 +1,21 @@
+{
+  "name": "sample-abap",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "transpile": "rm -rf output && abap_transpile",
+    "unit": "npm run transpile && echo RUNNING && node output/index.mjs && echo OK",
+    "lint": "abaplint",
+    "test": "npm run lint && npm run unit"
+  },
+  "devDependencies": {
+    "@abaplint/cli": "^2.102.41",
+    "@abaplint/database-snowflake": "^2.7.96",
+    "@abaplint/database-sqlite": "^2.7.96",
+    "@abaplint/runtime": "^2.7.97",
+    "@abaplint/transpiler-cli": "^2.7.97",
+    "dotenv": "^16.3.1"
+  },
+  "author": "",
+  "license": "EPL"
+}
