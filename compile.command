@@ -4,11 +4,11 @@
     "commands": [
         {
             "os": "linux",
-            "command": "node run.mjs"
+            "command": "npm test"
         },
         {
             "os": "mac",
-            "command": "node run.mjs"
+            "command": "npm test"
         }
     ]
 }
