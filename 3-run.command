@@ -4,11 +4,11 @@
     "commands": [
         {
             "os": "linux",
-            "command": "npm test"
+            "command": "npm run run"
         },
         {
             "os": "mac",
-            "command": "npm test"
+            "command": "npm run run"
         }
     ]
 }
