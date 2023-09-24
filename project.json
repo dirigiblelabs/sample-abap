@@ -3,7 +3,8 @@
     "actions": [
         {
             "name": "build",
-            "command": "sh build.sh"
+            "command": "sh build.sh",
+            "publish": "true"
         }
     ]
 }
