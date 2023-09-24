@@ -1,1 +1,0 @@
-find . -name '*.mjs' -print | xargs sed -i 's/%23/#/g'

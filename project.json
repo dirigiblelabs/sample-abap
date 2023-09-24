@@ -1,1 +1,9 @@
-{"guid":"sample-abap"}
+{
+    "guid": "sample-abap",
+    "actions": [
+        {
+            "name": "build",
+            "command": "sh build.sh"
+        }
+    ]
+}
