@@ -5,7 +5,8 @@ ENDCLASS.
 
 CLASS zcl_hello_world IMPLEMENTATION.
   METHOD run.
-    WRITE '@KERNEL const http = await import("@dirigible/http");'.
-    WRITE '@KERNEL http.response.println("hello world");'.
+    zcl_dirigible_response=>println(
+      EXPORTING
+        message_in     = 'hello world' ).
   ENDMETHOD.
 ENDCLASS.
