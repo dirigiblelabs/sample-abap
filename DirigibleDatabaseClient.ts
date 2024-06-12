@@ -1,26 +1,16 @@
-// import initSqlJs, { Database, QueryExecResult, Statement, SqlValue } from "sql.js";
-// import { DB } from "@abaplint/runtime";
-
-import initSqlJs, { Database, QueryExecResult, Statement, SqlValue } from "sample-abap/node_modules/sql.js";
 import { DB } from "sample-abap/node_modules/@abaplint/runtime/build/src";
 
-
-
-
 export class DirigibleDatabaseClient implements DB.DatabaseClient {
-  public readonly name = "sqlite";
+  public readonly name = "dirigible-database";
   private readonly trace: boolean;
   private sqlite: Database | undefined = undefined;
 
   public constructor(input?: { trace?: boolean }) {
-    console.log("!!!! Init...")
+    console.log("!!! Init...")
     this.trace = input?.trace === true;
   }
 
-  public async connect(data?: ArrayLike<number> | Buffer | null) {
-    const SQL = await initSqlJs();
-    this.sqlite = new SQL.Database(data);
-
+  public async connect() {
     // @ts-ignore
     if (abap?.context?.databaseConnections && abap.context.databaseConnections["DEFAULT"] === this) {
       // @ts-ignore
