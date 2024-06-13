@@ -71,7 +71,7 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
       this.logger.error(errorMessage, error);
       throw new Error(errorMessage);
     }
-
+  }
 
   public async beginTransaction() {
     return; // todo
