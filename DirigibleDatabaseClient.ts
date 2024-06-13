@@ -4,12 +4,16 @@ import { database, sql, update, query } from "sdk/db";
 
 import { logging } from "sdk/log";
 
+const DatabaseResultSetHelper = Java.type("org.eclipse.dirigible.components.data.management.helpers.DatabaseResultSetHelper");
 
 export class DirigibleDatabaseClient implements DB.DatabaseClient {
 
-  private readonly logger;
-
   public readonly name = "dirigible-default-database";
+  private static readonly DEFAULT_DATA_SOURCE_NAME = "DefaultDB";
+
+  private readonly logger;
+  private connection: any;
+
 
   public constructor() {
     this.logger = logging.getLogger("org.eclipse.dirigible.DirigibleDatabaseClient");
@@ -17,16 +21,23 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
   }
 
   public async connect() {
+    this.logger.debug("Creating connection...");
+    this.connection = database.getConnection(DirigibleDatabaseClient.DEFAULT_DATA_SOURCE_NAME);
+    this.connection.setAutoCommit(false);
     // @ts-ignore
     if (abap?.context?.databaseConnections && abap.context.databaseConnections["DEFAULT"] === this) {
       // @ts-ignore
       abap.builtin.sy.get().dbsys?.set(this.name);
     }
-    this.logger.debug("Connected.");
+    this.logger.debug("Created connection");
   }
 
   public async disconnect() {
-    this.logger.debug("Disconnect is not applicable for this client.");
+    if (this.connection) {
+      this.logger.debug("Closing connection...");
+      this.connection.close();
+      this.logger.debug("Connection was closed");
+    }
   }
 
   public async execute(sql: string | string[]): Promise<void> {
@@ -41,19 +52,25 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
     if (sql === "") {
       return;
     }
-    let connection = database.getConnection("DefaultDB");
+    if (!this.connection) {
+      const errorMessage = `SQL [${sql}] cannot be executed because the connection is not inialized`;
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
     this.logger.debug("Executing sql [{}]", sql);
 
     try {
-      const statement = connection.createStatement();
+      const statement = this.connection.createStatement();
       const hasResultSet = statement.execute(sql);
       if (hasResultSet) {
         this.logger.debug("Executed sql [{}] has result set.", sql);
       }
-    } finally {
-      connection.close();
+    } catch (error) {
+      const errorMessage = `Failed to execute [${sql}]. Error: [${error}]`;
+      this.logger.error(errorMessage, error);
+      throw new Error(errorMessage);
     }
-  }
 
 
   public async beginTransaction() {
@@ -61,11 +78,24 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
   }
 
   public async commit() {
+    if (this.connection) {
+      this.logger.debug("Committing current connection...");
+      this.connection.commit();
+      this.logger.debug("Current connection was committed");
+    } else {
+      this.logger.warn("Connection not initialized and cannot be committed");
+    }
     return; // todo
   }
 
   public async rollback() {
-    return; // todo
+    if (this.connection) {
+      this.logger.debug("Rolling back current connection...");
+      this.connection.rollback();
+      this.logger.debug("Current connection was rollbacked");
+    } else {
+      this.logger.warn("Connection not initialized and cannot be rollbacked");
+    }
   }
 
   public async delete(options: DB.DeleteDatabaseOptions) {
@@ -111,7 +141,7 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
 
       return this.createCRUDResult(affectedRows, 0)
     } catch (error) {
-      this.logger.error(`Failed to execute [${sql}]. Error: [${error}]`, error);
+      this.logger.error(`Failed to execute [{}]. Error: [{}]`, sql, error);
       return this.createErrorCRUDResult();
     }
   }
@@ -163,27 +193,45 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
   }
 
   public async openCursor(options: DB.SelectDatabaseOptions): Promise<DB.DatabaseCursorCallbacks> {
-    // const statement = this.sqlite!.prepare(options.select, null);
-    // return {
-    //   fetchNextCursor: (packageSize: number) => this.fetchNextCursor.bind(this)(packageSize, statement),
-    //   closeCursor: () => this.closeCursor.bind(this)(statement),
-    // };
+    if (!this.connection) {
+      const errorMessage = "Connection is not initialized. Consider calling connect method first.";
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const statement = this.connection.createStatement();
+
+    const selectSQL = options.select;
+    this.logger.debug("Executing [{}]...", selectSQL);
+
+    const resultSet = statement.executeQuery(selectSQL);
+
+    return {
+      fetchNextCursor: (packageSize: number) => this.fetchNextCursor.bind(this)(packageSize, resultSet),
+      closeCursor: () => this.closeCursor.bind(this)(resultSet),
+    };
   }
 
-  private async fetchNextCursor(packageSize: number, statement: Statement): Promise<DB.SelectDatabaseResult> {
-    // const values: SqlValue[][] = [];
+  private async fetchNextCursor(packageSize: number, resultSet: any): Promise<DB.SelectDatabaseResult> {
+    this.logger.debug("Fetching next cursor...");
+    const stringify = false;
+    const resultSetJson = DatabaseResultSetHelper.toJson(resultSet, packageSize, stringify);
 
-    // while (statement.step()) {
-    //   values.push(statement.get());
-    //   if (values.length === packageSize) {
-    //     return { rows: this.convert([{ columns: statement.getColumnNames(), values }]) };
-    //   }
-    // }
+    const selectDatabaseResult = {
+      rows: JSON.parse(resultSetJson)
+    };
+    this.logger.debug("Retrieved data [{}]", JSON.stringify(selectDatabaseResult));
 
-    // return { rows: [] };
+    return selectDatabaseResult;
   }
 
-  private async closeCursor(statement: Statement): Promise<void> {
-    // statement.free();
+  private async closeCursor(resultSet: any): Promise<void> {
+    if (resultSet && !resultSet.isClosed()) {
+      this.logger.debug("Closing result set...")
+      resultSet.close();
+      this.logger.debug("Result set was closed")
+    } else {
+      this.logger.warn("Result set is not defined or it is already closed.")
+    }
   }
 }
