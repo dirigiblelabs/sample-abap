@@ -1,13 +1,19 @@
 import { DB } from "sample-abap/node_modules/@abaplint/runtime/build/src";
 
-export class DirigibleDatabaseClient implements DB.DatabaseClient {
-  public readonly name = "dirigible-database";
-  private readonly trace: boolean;
-  private sqlite: Database | undefined = undefined;
+import { database, sql, update } from "sdk/db";
 
-  public constructor(input?: { trace?: boolean }) {
-    console.log("!!! Init...")
-    this.trace = input?.trace === true;
+import { logging } from "sdk/log";
+
+
+export class DirigibleDatabaseClient implements DB.DatabaseClient {
+
+  private readonly logger;
+
+  public readonly name = "dirigible-default-database";
+
+  public constructor() {
+    this.logger = logging.getLogger("org.eclipse.dirigible.DirigibleDatabaseClient");
+    this.logger.info("Initializing...")
   }
 
   public async connect() {
@@ -16,29 +22,39 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
       // @ts-ignore
       abap.builtin.sy.get().dbsys?.set(this.name);
     }
+    this.logger.debug("Connected.");
   }
 
   public async disconnect() {
-    this.sqlite!.close();
-    this.sqlite = undefined;
+    this.logger.debug("Disconnect is not applicable for this client.");
   }
 
   public async execute(sql: string | string[]): Promise<void> {
-    if (typeof sql === "string") {
-      if (sql === "") {
-        return;
-      }
-      this.sqlite!.run(sql);
-    } else {
+
+    if (typeof sql !== "string") {
       for (const s of sql) {
         await this.execute(s);
       }
+      return;
+    }
+
+    if (sql === "") {
+      return;
+    }
+    let connection = database.getConnection("DefaultDB");
+    this.logger.debug("Executing sql [{}]", sql);
+
+    try {
+      const statement = connection.createStatement();
+      const hasResultSet = statement.execute(sql);
+      if (hasResultSet) {
+        this.logger.debug("Executed sql [{}] has result set.", sql);
+      }
+    } finally {
+      connection.close();
     }
   }
 
-  public export() {
-    return this.sqlite?.export();
-  }
 
   public async beginTransaction() {
     return; // todo
@@ -53,75 +69,62 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
   }
 
   public async delete(options: DB.DeleteDatabaseOptions) {
-    const sql = `DELETE FROM ${options.table} WHERE ${options.where}`;
+    let sqlDelete = sql.getDialect()//
+      .delete()//
+      .from(options.table)//
+      .build();
 
-    let subrc = 0;
-    let dbcnt = 0;
-    try {
-      if (this.trace === true) {
-        console.log(sql);
-      }
-
-      this.sqlite!.exec(sql);
-
-      // https://www.sqlite.org/c3ref/changes.html
-      const chg = this.sqlite!.exec("SELECT changes()");
-      dbcnt = chg[0]["values"][0][0] as number;
-      if (dbcnt === 0) {
-        subrc = 4;
-      }
-    } catch (error) {
-      subrc = 4;
-    }
-
-    return { subrc, dbcnt };
+    sqlDelete = sqlDelete + ` WHERE ${options.where}`;
+    return this.executeUpdate(sqlDelete);
   }
 
   public async update(options: DB.UpdateDatabaseOptions) {
-    const sql = `UPDATE ${options.table} SET ${options.set.join(", ")} WHERE ${options.where}`;
+    let sqlUpdate = sql.getDialect()//
+      .update()//
+      .table(options.table)//
+      .build();
 
-    let subrc = 0;
-    let dbcnt = 0;
-    try {
-      if (this.trace === true) {
-        console.log(sql);
-      }
-
-      this.sqlite!.exec(sql);
-
-      // https://www.sqlite.org/c3ref/changes.html
-      const chg = this.sqlite!.exec("SELECT changes()");
-      dbcnt = chg[0]["values"][0][0] as number;
-      if (dbcnt === 0) {
-        subrc = 4;
-      }
-    } catch (error) {
-      subrc = 4;
-    }
-
-    return { subrc, dbcnt };
+    sqlUpdate = sqlUpdate + ` SET ${options.set.join(", ")} WHERE ${options.where}`;
+    return this.executeUpdate(sqlUpdate);
   }
 
   public async insert(options: DB.InsertDatabaseOptions) {
-    const sql = `INSERT INTO ${options.table} (${options.columns.map(c => "'" + c + "'").join(",")}) VALUES (${options.values.join(",")})`;
+    const insertBuilder = sql.getDialect()//
+      .insert()//
+      .table(options.table);
 
-    let subrc = 0;
-    let dbcnt = 0;
+    options.columns.forEach((columnName: string, index: number) => {
+      const columnValue = options.values[index];
+      insertBuilder.column(columnName).value(columnValue);
+    });
+
+    const sqlInsert = insertBuilder.build();
+    return this.executeUpdate(sqlInsert);
+  }
+
+  private executeUpdate(sql: string) {
+    this.logger.debug("Executing [{}]...", sql);
+
     try {
-      if (this.trace === true) {
-        console.log(sql);
-      }
+      const affectedRows = update.execute(sql);
+      this.logger.debug("Affected [{}] rows by executing [{}]", affectedRows, sql);
 
-      this.sqlite!.exec(sql);
-      dbcnt = 1;
+      return this.createCRUDResult(affectedRows, 0)
     } catch (error) {
-      if (this.trace === true) {
-        console.dir(error);
-      }
-      // eg "UNIQUE constraint failed" errors
-      subrc = 4;
+      this.logger.error(`Failed to execute [${sql}]. Error: [${error}]`, error);
+      return this.createErrorCRUDResult();
     }
-    return { subrc, dbcnt };
+  }
+
+  private createErrorCRUDResult() {
+    return this.createCRUDResult(0, 4);
+  }
+
+  private createCRUDResult(affectedRows: number, error: number) {
+    return {
+      dbcnt: affectedRows,
+      subrc: error
+    }
   }
 
   // // https://www.sqlite.org/lang_select.html
