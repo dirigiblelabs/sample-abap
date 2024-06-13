@@ -1,0 +1,28 @@
+{
+    "name": "EMPLOYEES",
+    "type": "TABLE",
+    "columns": [
+        {
+            "name": "ID",
+            "type": "INTEGER",
+            "length": "0",
+            "nullable": "false",
+            "primaryKey": "true",
+            "defaultValue": ""
+        },
+        {
+            "name": "FIRST_NAME",
+            "type": "VARCHAR",
+            "length": "50",
+            "nullable": "false",
+            "primaryKey": "false"
+        },
+        {
+            "name": "LAST_NAME",
+            "type": "VARCHAR",
+            "length": "50",
+            "nullable": "false",
+            "primaryKey": "false"
+        }
+    ]
+}
