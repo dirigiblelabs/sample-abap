@@ -1,0 +1,29 @@
+CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
+  PUBLIC SECTION.
+    CLASS-METHODS: insert_entry
+              IMPORTING iv_id TYPE employees-id
+                        iv_first_name TYPE employees-first_name
+                        iv_last_name TYPE employees-last_name.
+ENDCLASS.
+
+CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
+  METHOD insert_entry.
+    DATA: lv_sql TYPE string.
+
+    CONCATENATE 'INSERT INTO EMPLOYEES (ID, FIRST_NAME, LAST_NAME) VALUES ('
+                iv_id ', '
+               '''' iv_first_name ''', '
+               '''' iv_last_name ''')'
+               INTO lv_sql.
+
+    EXEC SQL.
+      EXECUTE IMMEDIATE :lv_sql.
+    ENDEXEC.
+
+    IF sy-subrc = 0.
+      WRITE: / 'Data successfully inserted into EMPLOYEES table.'.
+    ELSE.
+      WRITE: / 'Error inserting data into EMPLOYEES table.'.
+    ENDIF.
+  ENDMETHOD.
+ENDCLASS.
