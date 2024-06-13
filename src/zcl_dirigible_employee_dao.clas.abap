@@ -8,7 +8,7 @@ CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
         firstName  TYPE string,
         lastName   TYPE string,
       END OF ty_employee,
-      ty_employees TYPE TABLE OF ty_employee WITH EMPTY KEY.
+      ty_employees TYPE STANDARD TABLE OF ty_employee WITH DEFAULT KEY.
 
     CLASS-METHODS:
       select_all
@@ -23,7 +23,7 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
           ls_employee  TYPE ty_employee,
           lv_result    TYPE string.
 
-    SELECT id, firstName, lastName 
+    SELECT id firstName lastName
       FROM employees 
       INTO TABLE lt_employees.
 
