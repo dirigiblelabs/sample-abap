@@ -1,6 +1,6 @@
 import { DB } from "sample-abap/node_modules/@abaplint/runtime/build/src";
 
-import { database, sql, update } from "sdk/db";
+import { database, sql, update, query } from "sdk/db";
 
 import { logging } from "sdk/log";
 
@@ -127,27 +127,18 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
     }
   }
 
-  // // https://www.sqlite.org/lang_select.html
   public async select(options: DB.SelectDatabaseOptions) {
-    let res: undefined | QueryExecResult[] = undefined;
-
-    options.select = options.select.replace(/ UP TO (\d+) ROWS(.*)/i, "$2 LIMIT $1");
-    if (options.primaryKey) {
-      options.select = options.select.replace(/ ORDER BY PRIMARY KEY/i, " ORDER BY " + options.primaryKey.join(", "));
-    } else {
-      options.select = options.select.replace(/ ORDER BY PRIMARY KEY/i, "");
-    }
-    options.select = options.select.replace(/ ASCENDING/ig, " ASC");
-    options.select = options.select.replace(/ DESCENDING/ig, " DESC");
-    options.select = options.select.replace(/~/g, ".");
-
-    if (this.trace === true) {
-      console.log(options.select);
-    }
+    let selectSQL = this.convertInputSelect(options.select, options.primaryKey);
+    this.logger.debug("Executing select [{}]...", selectSQL);
 
     try {
-      res = this.sqlite!.exec(options.select);
+      const resultSet = query.execute(selectSQL);
+      const selectDatabaseResult = { rows: resultSet };
+      this.logger.debug("Result of select [{}]: [{}]", selectSQL, JSON.stringify(selectDatabaseResult));
+
+      return selectDatabaseResult;
     } catch (error) {
+      this.logger.error(`Failed to execute [${selectSQL}]. Error: [${error}]`, error);
       // @ts-ignore
       if (abap.Classes["CX_SY_DYNAMIC_OSQL_SEMANTICS"] !== undefined) {
         // @ts-ignore
@@ -155,52 +146,44 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
       }
       throw error;
     }
-
-    const rows = this.convert(res);
-
-    return { rows: rows };
   }
 
-  private convert(res: QueryExecResult[]): DB.DatabaseRows {
-    if (res === undefined || res.length === 0) {
-      return [];
+  private convertInputSelect(select: string, primaryKeys: string[] | undefined) {
+    let convertedSelect = select.replace(/ UP TO (\d+) ROWS(.*)/i, "$2 LIMIT $1");
+    if (primaryKeys) {
+      convertedSelect = convertedSelect.replace(/ ORDER BY PRIMARY KEY/i, " ORDER BY " + primaryKeys.join(", "));
+    } else {
+      convertedSelect = convertedSelect.replace(/ ORDER BY PRIMARY KEY/i, "");
     }
+    convertedSelect = convertedSelect.replace(/ ASCENDING/ig, " ASC");
+    convertedSelect = convertedSelect.replace(/ DESCENDING/ig, " DESC");
+    convertedSelect = convertedSelect.replace(/~/g, ".");
 
-    const rows: DB.DatabaseRows = [];
-    for (const sqliteRow of res[0].values) {
-      const row: DB.DatabaseRow = {};
-      let i = 0;
-      for (const columnName of res[0].columns) {
-        row[columnName] = sqliteRow[i];
-        i++;
-      }
-      rows.push(row);
-    }
-    return rows;
+    return convertedSelect;
   }
 
   public async openCursor(options: DB.SelectDatabaseOptions): Promise<DB.DatabaseCursorCallbacks> {
-    const statement = this.sqlite!.prepare(options.select, null);
-    return {
-      fetchNextCursor: (packageSize: number) => this.fetchNextCursor.bind(this)(packageSize, statement),
-      closeCursor: () => this.closeCursor.bind(this)(statement),
-    };
+    // const statement = this.sqlite!.prepare(options.select, null);
+    // return {
+    //   fetchNextCursor: (packageSize: number) => this.fetchNextCursor.bind(this)(packageSize, statement),
+    //   closeCursor: () => this.closeCursor.bind(this)(statement),
+    // };
   }
 
   private async fetchNextCursor(packageSize: number, statement: Statement): Promise<DB.SelectDatabaseResult> {
-    const values: SqlValue[][] = [];
+    // const values: SqlValue[][] = [];
 
-    while (statement.step()) {
-      values.push(statement.get());
-      if (values.length === packageSize) {
-        return { rows: this.convert([{ columns: statement.getColumnNames(), values }]) };
-      }
-    }
+    // while (statement.step()) {
+    //   values.push(statement.get());
+    //   if (values.length === packageSize) {
+    //     return { rows: this.convert([{ columns: statement.getColumnNames(), values }]) };
+    //   }
+    // }
 
-    return { rows: [] };
+    // return { rows: [] };
   }
 
   private async closeCursor(statement: Statement): Promise<void> {
-    statement.free();
+    // statement.free();
   }
 }
