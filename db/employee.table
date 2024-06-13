@@ -1,9 +1,9 @@
 {
-    "name": "EMPLOYEES",
+    "name": "employees",
     "type": "TABLE",
     "columns": [
         {
-            "name": "ID",
+            "name": "id",
             "type": "INTEGER",
             "length": "0",
             "nullable": "false",
@@ -11,14 +11,14 @@
             "defaultValue": ""
         },
         {
-            "name": "FIRST_NAME",
+            "name": "firstName",
             "type": "VARCHAR",
             "length": "50",
             "nullable": "false",
             "primaryKey": "false"
         },
         {
-            "name": "LAST_NAME",
+            "name": "lastName",
             "type": "VARCHAR",
             "length": "50",
             "nullable": "false",
