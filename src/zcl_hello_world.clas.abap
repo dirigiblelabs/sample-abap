@@ -7,6 +7,15 @@ CLASS zcl_hello_world IMPLEMENTATION.
   METHOD run.
     zcl_dirigible_response=>println(
       EXPORTING
-        message_in     = 'hello world' ).
+        message_in     = 'hello world!' ).
+
+    zcl_dirigible_response=>println(
+      EXPORTING
+        message_in     = 'inserting an employee...' ).
+
+    zcl_dirigible_response=>println(
+      EXPORTING
+        message_in     = 'employee was inserted!' ).
+
   ENDMETHOD.
 ENDCLASS.
