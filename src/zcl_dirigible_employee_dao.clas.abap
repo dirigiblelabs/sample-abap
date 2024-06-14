@@ -11,28 +11,18 @@ CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
         RETURNING VALUE(rv_result) TYPE string.
 
 ENDCLASS.
-
 CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
   METHOD select_all.
     DATA: lt_employees TYPE ty_employees,
-          ls_employee  TYPE ty_employee,
-          lv_result    TYPE string.
+          lv_json       TYPE string.
 
     SELECT id firstName lastName
       FROM employees
       INTO TABLE lt_employees.
 
-    LOOP AT lt_employees INTO ls_employee.
-      CONCATENATE lv_result
-                  'ID:' ls_employee-id
-                  ' First Name:' ls_employee-firstName
-                  ' Last Name:' ls_employee-lastName
-                  cl_abap_char_utilities=>cr_lf
-                  INTO lv_result
-                  SEPARATED BY space.
-    ENDLOOP.
-
-    rv_result = lv_result.
+      zcl_dirigible_response=>println(
+        EXPORTING
+          message_in = lt_employees ).
   ENDMETHOD.
 
 ENDCLASS.

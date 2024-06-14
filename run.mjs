@@ -8,8 +8,8 @@ function initDefaultDataSource() {
     abap.context.databaseConnections["DEFAULT"] = new DirigibleDatabaseClient();
     console.log("!!! Default data source for ABAP was initialized");
 }
-await initializeABAP();
 initDefaultDataSource();
+await initializeABAP();
 
 await zcl_hello_world.run();
 
