@@ -20,9 +20,9 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
       FROM employees
       INTO TABLE lt_employees.
 
-      zcl_dirigible_response=>println(
-        EXPORTING
-          message_in = lt_employees ).
+    zcl_dirigible_response=>println(
+      EXPORTING
+        message_in = lt_employees ).
   ENDMETHOD.
 
 ENDCLASS.
