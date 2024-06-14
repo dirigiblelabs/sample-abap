@@ -3,3 +3,4 @@ output
 dist
 .env
 .DS_Store
+.idea
