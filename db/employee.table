@@ -11,14 +11,14 @@
             "defaultValue": ""
         },
         {
-            "name": "firstName",
+            "name": "first_name",
             "type": "VARCHAR",
             "length": "50",
             "nullable": "false",
             "primaryKey": "false"
         },
         {
-            "name": "lastName",
+            "name": "last_name",
             "type": "VARCHAR",
             "length": "50",
             "nullable": "false",

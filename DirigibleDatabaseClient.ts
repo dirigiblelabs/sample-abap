@@ -159,7 +159,7 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
 
   public async select(options: DB.SelectDatabaseOptions) {
     let selectSQL = this.convertInputSelect(options.select, options.primaryKey);
-    this.logger.debug("Executing select [{}]...", selectSQL);
+    this.logger.debug("Executing select [{}]... Input options [{}]", selectSQL, JSON.stringify(options));
 
     try {
       const resultSet = query.execute(selectSQL);
