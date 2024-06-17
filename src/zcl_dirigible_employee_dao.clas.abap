@@ -13,6 +13,10 @@ CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
     CLASS-METHODS select_all
       RETURNING VALUE(rv_result) TYPE string.
 
+    CLASS-METHODS update_employee_last_name.
+
+    CLASS-METHODS delete_all_employees.
+
 ENDCLASS.
 
 CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
@@ -46,6 +50,36 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
     zcl_dirigible_response=>println(
       EXPORTING
         message_in = lt_employees ).
+  ENDMETHOD.
+
+  METHOD update_employee_last_name.
+    DATA: lv_rc TYPE i.
+
+    UPDATE employees
+      SET last_name = 'Popova'
+      WHERE id = 321.
+
+    lv_rc = sy-dbcnt.
+
+    IF lv_rc > 0.
+      WRITE: / 'Employee last name updated successfully.'.
+    ELSE.
+      WRITE: / 'Failed to update employee last name.'.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD delete_all_employees.
+    DATA: lv_rc TYPE i.
+
+    DELETE FROM employees WHERE id > 0.
+
+    lv_rc = sy-dbcnt.
+
+    IF lv_rc > 0.
+      WRITE: / 'All employees deleted successfully.'.
+    ELSE.
+      WRITE: / 'No employees found to delete.'.
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

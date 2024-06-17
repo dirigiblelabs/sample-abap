@@ -99,6 +99,7 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
   }
 
   public async delete(options: DB.DeleteDatabaseOptions) {
+    this.logger.debug("Deleting using options [{}]", JSON.stringify(options));
     let sqlDelete = sql.getDialect()//
       .delete()//
       .from(options.table)//
@@ -109,6 +110,7 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
   }
 
   public async update(options: DB.UpdateDatabaseOptions) {
+    this.logger.debug("Updating using options [{}]", JSON.stringify(options));
     let sqlUpdate = sql.getDialect()//
       .update()//
       .table(options.table)//
