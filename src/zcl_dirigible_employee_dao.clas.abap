@@ -80,6 +80,4 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
-
 ENDCLASS.
