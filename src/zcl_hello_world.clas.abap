@@ -13,7 +13,7 @@ ENDCLASS.
 
 CLASS zcl_hello_world IMPLEMENTATION.
 
-
+  " this is the main method called by run.mjs
   METHOD run.
     print_hello_world( ).
 
