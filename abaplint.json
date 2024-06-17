@@ -230,7 +230,7 @@
                 "/json/",
                 "zcl_abapgit_object_pdts.clas.testclasses.abap"
             ],
-            "length": 120
+            "length": 160
         },
         "line_only_punc": {
             "ignoreExceptions": true
