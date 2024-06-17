@@ -8,7 +8,7 @@ ENDCLASS.
 CLASS zcl_dirigible_response IMPLEMENTATION.
   METHOD println.
     WRITE '@KERNEL const http = await import("sdk/http");'.
-    WRITE '@KERNEL const valueString = JSON.stringify(message_in.value, null, 2)'.
+    WRITE '@KERNEL const valueString = typeof message_in.value === "string" ? message_in.value : JSON.stringify(message_in.value, null, 2);'.
     WRITE '@KERNEL http.response.println(valueString);'.
   ENDMETHOD.
 
