@@ -22,6 +22,11 @@ CLASS zcl_hello_world IMPLEMENTATION.
 
     zcl_dirigible_response=>println(
       EXPORTING
+        message_in = 'All employees were deleted.' ).
+
+
+    zcl_dirigible_response=>println(
+      EXPORTING
         message_in = 'Inserting an employee...' ).
 
     zcl_dirigible_employee_dao=>insert_employee( ).
@@ -42,13 +47,13 @@ CLASS zcl_hello_world IMPLEMENTATION.
 
     zcl_dirigible_response=>println(
       EXPORTING
-        message_in = 'Updating employee last name' ).
+        message_in = 'Updating employee last name...' ).
 
     zcl_dirigible_employee_dao=>update_employee_last_name( ).
 
     zcl_dirigible_response=>println(
       EXPORTING
-        message_in = 'Employee last name was updated' ).
+        message_in = 'Employee last name was updated.' ).
 
   ENDMETHOD.
 
