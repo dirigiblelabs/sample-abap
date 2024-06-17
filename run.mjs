@@ -1,13 +1,16 @@
+import { logging } from "sdk/log";
 import { initializeABAP } from './output/init.mjs';
 import { zcl_hello_world } from './output/zcl_hello_world.clas.mjs';
-
 import { DirigibleDatabaseClient } from "./DirigibleDatabaseClient";
 
+const logger = logging.getLogger("run.mjs");
+
 function initDefaultDataSource() {
-    console.log("!!! Init default data source for ABAP...");
+    logger.info("Init default data source for ABAP...");
     abap.context.databaseConnections["DEFAULT"] = new DirigibleDatabaseClient();
-    console.log("!!! Default data source for ABAP was initialized");
+    logger.info("Default data source for ABAP was initialized");
 }
+
 initDefaultDataSource();
 await initializeABAP();
 
