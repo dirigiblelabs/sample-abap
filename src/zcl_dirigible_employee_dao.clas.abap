@@ -8,14 +8,12 @@ CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
       END OF ty_employee,
       ty_employees TYPE STANDARD TABLE OF ty_employee WITH DEFAULT KEY.
 
-    CLASS-METHODS insert_employee.
-
-    CLASS-METHODS select_all
-      RETURNING VALUE(rv_result) TYPE string.
-
-    CLASS-METHODS update_employee_last_name.
-
-    CLASS-METHODS delete_all_employees.
+    CLASS-METHODS:
+      delete_all_employees,
+      select_all
+        RETURNING VALUE(rv_result) TYPE string,
+      insert_employee,
+      update_employee_last_name.
 
 ENDCLASS.
 
