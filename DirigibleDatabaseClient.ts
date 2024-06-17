@@ -116,7 +116,8 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
       .table(options.table)//
       .build();
 
-    sqlUpdate = sqlUpdate + ` SET ${options.set.join(", ")} WHERE ${options.where}`;
+    // sqlUpdate already contains SET
+    sqlUpdate = sqlUpdate + ` ${options.set.join(", ")} WHERE ${options.where}`;
     return this.executeUpdate(sqlUpdate);
   }
 
