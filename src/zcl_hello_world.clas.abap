@@ -16,6 +16,16 @@ CLASS zcl_hello_world IMPLEMENTATION.
 
     zcl_dirigible_response=>println(
       EXPORTING
+        message_in = 'Inserting an employee...' ).
+
+    zcl_dirigible_employee_dao=>insert_employee( ).
+
+    zcl_dirigible_response=>println(
+      EXPORTING
+        message_in = 'An employee was inserted.' ).
+
+    zcl_dirigible_response=>println(
+      EXPORTING
         message_in = 'Selecting all employees...' ).
 
     zcl_dirigible_employee_dao=>select_all( ).

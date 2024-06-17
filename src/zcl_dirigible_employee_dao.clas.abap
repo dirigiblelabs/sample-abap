@@ -3,18 +3,41 @@ CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
     TYPES:
       BEGIN OF ty_employee,
         id         TYPE n LENGTH 10,
-        first_name  TYPE string,
-        last_name   TYPE string,
+        first_name TYPE string,
+        last_name  TYPE string,
       END OF ty_employee,
       ty_employees TYPE STANDARD TABLE OF ty_employee WITH DEFAULT KEY.
+
+    CLASS-METHODS insert_employee.
+
     CLASS-METHODS select_all
-        RETURNING VALUE(rv_result) TYPE string.
+      RETURNING VALUE(rv_result) TYPE string.
 
 ENDCLASS.
+
 CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
+
+  METHOD insert_employee.
+    " Declare a work area for the employee record
+    DATA: wa_employee TYPE ty_employee.
+
+    wa_employee-id = 321.
+    wa_employee-first_name = 'Desislava'.
+    wa_employee-last_name = 'Dimitrova'.
+
+    " Insert the work area into the employees table
+    INSERT INTO employees VALUES wa_employee.
+
+    IF sy-subrc = 0.
+      WRITE: / 'Employee inserted successfully.'.
+    ELSE.
+      WRITE: / 'Failed to insert employee.'.
+    ENDIF.
+  ENDMETHOD.
+
   METHOD select_all.
     DATA: lt_employees TYPE ty_employees,
-          lv_json       TYPE string.
+          lv_json      TYPE string.
 
     SELECT id first_name last_name
       FROM employees

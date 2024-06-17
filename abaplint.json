@@ -241,14 +241,7 @@
             "test": "^LT.+$"
         },
         "local_testclass_consistency": true,
-        "local_variable_names": {
-            "exclude": [
-                "/json/"
-            ],
-            "expectedConstant": "^LC_.*$",
-            "expectedData": "^L._.*$",
-            "expectedFS": "^<L._.*>$"
-        },
+        "local_variable_names": false,
         "main_file_contents": true,
         "many_parentheses": true,
         "max_one_method_parameter_per_line": true,

@@ -119,9 +119,10 @@ export class DirigibleDatabaseClient implements DB.DatabaseClient {
   }
 
   public async insert(options: DB.InsertDatabaseOptions) {
+    this.logger.debug("Inserting using options [{}]", JSON.stringify(options));
     const insertBuilder = sql.getDialect()//
       .insert()//
-      .table(options.table);
+      .into(options.table);
 
     options.columns.forEach((columnName: string, index: number) => {
       const columnValue = options.values[index];
