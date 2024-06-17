@@ -21,6 +21,33 @@ ENDCLASS.
 
 CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
 
+  METHOD delete_all_employees.
+    DATA: lv_rc TYPE i.
+
+    DELETE FROM employees WHERE id > 0.
+
+    lv_rc = sy-dbcnt.
+
+    IF lv_rc > 0.
+      WRITE: / 'All employees deleted successfully.'.
+    ELSE.
+      WRITE: / 'No employees found to delete.'.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD select_all.
+    DATA: lt_employees TYPE ty_employees,
+          lv_json      TYPE string.
+
+    SELECT id first_name last_name
+      FROM employees
+      INTO TABLE lt_employees.
+
+    zcl_dirigible_response=>println(
+      EXPORTING
+        message_in = lt_employees ).
+  ENDMETHOD.
+
   METHOD insert_employee.
     " Declare a work area for the employee record
     DATA: wa_employee TYPE ty_employee.
@@ -39,19 +66,6 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD select_all.
-    DATA: lt_employees TYPE ty_employees,
-          lv_json      TYPE string.
-
-    SELECT id first_name last_name
-      FROM employees
-      INTO TABLE lt_employees.
-
-    zcl_dirigible_response=>println(
-      EXPORTING
-        message_in = lt_employees ).
-  ENDMETHOD.
-
   METHOD update_employee_last_name.
     DATA: lv_rc TYPE i.
 
@@ -68,18 +82,6 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD delete_all_employees.
-    DATA: lv_rc TYPE i.
 
-    DELETE FROM employees WHERE id > 0.
-
-    lv_rc = sy-dbcnt.
-
-    IF lv_rc > 0.
-      WRITE: / 'All employees deleted successfully.'.
-    ELSE.
-      WRITE: / 'No employees found to delete.'.
-    ENDIF.
-  ENDMETHOD.
 
 ENDCLASS.
