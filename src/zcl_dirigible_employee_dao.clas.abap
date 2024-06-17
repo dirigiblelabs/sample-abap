@@ -47,14 +47,12 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD insert_employee.
-    " Declare a work area for the employee record
     DATA: wa_employee TYPE ty_employee.
 
     wa_employee-id = 321.
     wa_employee-first_name = 'Desislava'.
     wa_employee-last_name = 'Dimitrova'.
 
-    " Insert the work area into the employees table
     INSERT INTO employees VALUES wa_employee.
 
     IF sy-subrc = 0.
