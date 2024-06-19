@@ -8,14 +8,6 @@
             "ESNext",
             "DOM"
         ],
-        "paths": {
-            "sdk/*": [
-                "../modules/src/*"
-            ],
-            "/*": [
-                "../*"
-            ]
-        },
         "types": [
             "../modules/types"
         ]

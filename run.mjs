@@ -1,17 +1,8 @@
-import { logging } from "sdk/log";
 import { initializeABAP } from './output/init.mjs';
 import { zcl_hello_world } from './output/zcl_hello_world.clas.mjs';
-import { DirigibleDatabaseClient } from "./DirigibleDatabaseClient";
+import { DatabaseInitializer } from "sdk/abap/database";
 
-const logger = logging.getLogger("run.mjs");
-
-function initDefaultDataSource() {
-    logger.info("Init default data source for ABAP...");
-    abap.context.databaseConnections["DEFAULT"] = new DirigibleDatabaseClient();
-    logger.info("Default data source for ABAP was initialized");
-}
-
-initDefaultDataSource();
+DatabaseInitializer.initDefaultDataSource();
 await initializeABAP();
 
 // a workaround for https://github.com/abaplint/transpiler/issues/1441
