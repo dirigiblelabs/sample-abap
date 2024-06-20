@@ -1,6 +1,7 @@
-import { initializeABAP } from './dist/abap/init.mjs';
-import { zcl_hello_world } from './dist/abap/zcl_hello_world.clas.mjs';
 import { DatabaseInitializer } from "sdk/abap/database";
+import { initializeABAP } from '../dist/abap/init.mjs';
+
+import { zcl_abap_app } from '../dist/abap/zcl_abap_app.clas.mjs';
 
 DatabaseInitializer.initDefaultDataSource();
 await initializeABAP();
@@ -28,5 +29,5 @@ abap.DDIC.EMPLOYEES = {
     "keyFields": ["id"]
 };
 
-await zcl_hello_world.run();
+await zcl_abap_app.run();
 

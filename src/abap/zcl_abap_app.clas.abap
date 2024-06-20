@@ -1,4 +1,4 @@
-CLASS zcl_hello_world DEFINITION PUBLIC FINAL CREATE PUBLIC.
+CLASS zcl_abap_app DEFINITION PUBLIC FINAL CREATE PUBLIC.
 
   PUBLIC SECTION.
     CLASS-METHODS:
@@ -11,7 +11,7 @@ CLASS zcl_hello_world DEFINITION PUBLIC FINAL CREATE PUBLIC.
 
 ENDCLASS.
 
-CLASS zcl_hello_world IMPLEMENTATION.
+CLASS zcl_abap_app IMPLEMENTATION.
 
   " this is the main method called by run.mjs
   METHOD run.
