@@ -10,14 +10,11 @@
     "run": "node run.mjs"
   },
   "dependencies": {
-    "buffer": "^6.0.3"
-  },
-  "devDependencies": {
+    "buffer": "^6.0.3",
     "@abaplint/cli": "^2.110.0",
     "@abaplint/runtime": "^2.7.97",
-    "@abaplint/transpiler-cli": "^2.7.97",
-    "dotenv": "^16.3.1"
+    "@abaplint/transpiler-cli": "^2.7.97"
   },
-  "author": "",
+  "author": "codbex",
   "license": "EPL"
 }
