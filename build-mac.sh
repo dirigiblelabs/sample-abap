@@ -1,9 +1,11 @@
-rm -rf output
 rm -rf dist
 rm -rf node_modules
 
+mkdir dist
+
 npm install
 
+# check package.json for more details
 npm run transpile
 
 npm run lint
@@ -12,7 +14,7 @@ npm run lint
 # and replaces all occurrences of %23 with # in those files.
 find . -name '*.mjs' -print0 | xargs -0 sed -i '' 's/%23/#/g'
 
-esbuild run.mjs --tsconfig=./tsconfig.json --bundle --outdir=dist --format=esm --target=es2022 \
+esbuild src/run.mjs --tsconfig=./tsconfig.json --bundle --outdir=dist --format=esm --target=es2022 \
     --external:tls --external:net --external:util --external:crypto --external:zlib \
     --external:http --external:https --external:fs --external:path --external:url --external:sdk \
-    --inject:./polyfills/buffer.js --inject:./polyfills/process.js --out-extension:.js=.mjs
+    --inject:./src/lib/polyfills/buffer.js --inject:./src/lib/polyfills/process.js --out-extension:.js=.mjs

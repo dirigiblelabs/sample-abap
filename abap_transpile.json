@@ -1,7 +1,7 @@
 {
-  "input_folder": "src",
+  "input_folder": "src/abap",
   "input_filter": [],
-  "output_folder": "output",
+  "output_folder": "dist/abap",
   "libs": [
     {
       "url": "https://github.com/open-abap/open-abap-core"

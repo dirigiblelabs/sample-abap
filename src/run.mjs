@@ -1,5 +1,5 @@
-import { initializeABAP } from './output/init.mjs';
-import { zcl_hello_world } from './output/zcl_hello_world.clas.mjs';
+import { initializeABAP } from './dist/abap/init.mjs';
+import { zcl_hello_world } from './dist/abap/zcl_hello_world.clas.mjs';
 import { DatabaseInitializer } from "sdk/abap/database";
 
 DatabaseInitializer.initDefaultDataSource();
