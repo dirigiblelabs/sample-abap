@@ -1,5 +1,5 @@
 {
-  "input_folder": "src/abap",
+  "input_folder": "{../../../../root/registry/public/kronos/src/abap,src/abap}",
   "input_filter": [],
   "output_folder": "dist/abap",
   "libs": [

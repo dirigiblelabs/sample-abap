@@ -1,4 +1,4 @@
-CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
+CLASS zcl_employee_dao DEFINITION PUBLIC.
   PUBLIC SECTION.
     TYPES:
       BEGIN OF ty_employee,
@@ -17,7 +17,7 @@ CLASS zcl_dirigible_employee_dao DEFINITION PUBLIC.
 
 ENDCLASS.
 
-CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
+CLASS zcl_employee_dao IMPLEMENTATION.
 
   METHOD delete_all_employees.
     DATA: lv_rc TYPE i.
@@ -41,7 +41,7 @@ CLASS zcl_dirigible_employee_dao IMPLEMENTATION.
       FROM employees
       INTO TABLE lt_employees.
 
-    zcl_dirigible_response=>println(
+    zcl_codbex_response=>println(
       EXPORTING
         message_in = lt_employees ).
   ENDMETHOD.
