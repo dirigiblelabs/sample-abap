@@ -41,7 +41,9 @@ await initialize();
 await runABAPCode();
 
 async function useDAO() {
-    console.log("Getting all employees...");
+    console.log("----------------------------------------");
+    console.log("Calling transpiled DAO directly...");
+    console.log("Getting all employees using DAO...");
     const employees = zcl_employee_dao.select_all();
     console.log("All employees: " + JSON.stringify(employees));
 
