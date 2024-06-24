@@ -17,7 +17,7 @@ npm run transpile
 
 # Find all .mjs files in the current directory and its subdirectories, 
 # and replaces all occurrences of %23 with # in those files.
-find . -name '*.mjs' -print0 | xargs -0 sed -i '' 's/%23/#/g'
+find . -name '*.mjs' -print | xargs sed -i 's/%23/#/g'
 
 esbuild src/run.mjs --tsconfig=./tsconfig.json --bundle --outdir=dist --format=esm --target=es2022 \
     --external:tls --external:net --external:util --external:crypto --external:zlib \
