@@ -41,7 +41,7 @@ CLASS zcl_employee_dao IMPLEMENTATION.
       FROM employees
       INTO TABLE lt_employees.
 
-    zcl_codbex_response=>println(
+    zcl_codbex_http_response=>println(
       EXPORTING
         message_in = lt_employees ).
   ENDMETHOD.
