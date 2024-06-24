@@ -1,10 +1,14 @@
 {
-  "input_folder": "{../../../../root/registry/public/kronos/src/abap,src/abap}",
+  "input_folder": "{src/abap,test/src}",
   "input_filter": [],
   "output_folder": "dist/abap",
   "libs": [
     {
       "url": "https://github.com/open-abap/open-abap-core"
+    },
+    {
+      "files": "/**/*.*",
+      "folder": "/../../../../root/registry/public/kronos/src/abap"
     }
   ],
   "write_unit_tests": true,
