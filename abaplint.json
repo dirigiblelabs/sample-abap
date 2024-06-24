@@ -1,6 +1,6 @@
 {
     "global": {
-        "files": "/{test/src,src}/**/*.*",
+        "files": "/{src/abap,test/src}/**/*.*",
         "skipGeneratedFunctionGroups": true,
         "skipGeneratedGatewayClasses": true,
         "skipGeneratedPersistentClasses": true
@@ -9,6 +9,10 @@
         {
             "files": "/**/*.*",
             "folder": "/deps"
+        },
+        {
+            "files": "/**/*.*",
+            "folder": "/../../../../root/registry/public/kronos/src/abap"
         },
         {
             "files": "/src/**/*.*",

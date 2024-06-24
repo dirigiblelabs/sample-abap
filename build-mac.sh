@@ -11,9 +11,7 @@ npm install
 # check package.json for more details
 npm run transpile
 
-# TODO: temp commented
-# to be fixed
-# npm run lint
+npm run lint
 
 # Find all .mjs files in the current directory and its subdirectories, 
 # and replaces all occurrences of %23 with # in those files.
