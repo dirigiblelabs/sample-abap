@@ -3,21 +3,18 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "transpile": "rm -rf output && abap_transpile",
-    "unit": "npm run transpile && echo RUNNING && node output/index.mjs && echo OK",
-    "lint": "abaplint",
+    "transpile": "rm -rf output && abap_transpile abap_transpile.json",
+    "lint": "abaplint --config abaplint.json",
+    "unit" : "npm run transpile && echo RUNNING && node dist/abap/index.mjs && echo OK",
     "test": "npm run lint && npm run unit",
-    "run": "node run.mjs"
+    "run": "node dist/run.mjs"
   },
   "dependencies": {
-    "buffer": "^6.0.3"
+    "buffer": "^6.0.3",
+    "@abaplint/runtime": "^2.8.27",
+    "@abaplint/cli": "^2.110.1",
+    "@abaplint/transpiler-cli": "^2.8.27"
   },
-  "devDependencies": {
-    "@abaplint/cli": "^2.102.42",
-    "@abaplint/runtime": "^2.7.97",
-    "@abaplint/transpiler-cli": "^2.7.97",
-    "dotenv": "^16.3.1"
-  },
-  "author": "",
+  "author": "codbex",
   "license": "EPL"
 }
