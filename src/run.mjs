@@ -2,7 +2,6 @@ import { DatabaseInitializer } from "sdk/abap/database";
 import { initializeABAP } from '../dist/abap/init.mjs';
 
 import { zcl_abap_app } from '../dist/abap/zcl_abap_app.clas.mjs';
-import { zcl_employee_dao } from '../dist/abap/zcl_employee_dao.clas.mjs';
 
 async function initialize() {
     DatabaseInitializer.initDefaultDataSource();
@@ -32,22 +31,6 @@ async function initialize() {
     };
 }
 
-async function runABAPCode() {
-    await zcl_abap_app.run();
-}
-
 await initialize();
 
-await runABAPCode();
-
-async function useDAO() {
-    console.log("----------------------------------------");
-    console.log("Calling transpiled DAO directly...");
-    console.log("Getting all employees using DAO...");
-    const employees = zcl_employee_dao.select_all();
-    console.log("All employees: " + JSON.stringify(employees));
-
-    console.log("Done");
-}
-
-await useDAO();
+await zcl_abap_app.run();
