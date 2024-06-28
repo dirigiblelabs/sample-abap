@@ -52,7 +52,6 @@ CLASS zcl_employee_dao IMPLEMENTATION.
     zcl_codbex_http_response=>println(
       EXPORTING
           message_in = lt_employees ).
-    WRITE: / 'Employees selected.'.
   ENDMETHOD.
 
   METHOD insert_employee.
